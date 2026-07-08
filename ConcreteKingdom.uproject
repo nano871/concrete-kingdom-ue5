@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.4",
+	"Category": "Games",
+	"Description": "An open-world crime sandbox. One district. Your empire.",
+	"Modules": [
+		{
+			"Name": "ConcreteKingdom",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ChaosVehicles",
+			"Enabled": true
+		}
+	]
+}
