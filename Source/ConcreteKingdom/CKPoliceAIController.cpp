@@ -21,7 +21,12 @@ void ACKPoliceAIController::BeginPlay()
 void ACKPoliceAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if (WantedLevel > 0) Chase();
+    if (WantedLevel > 0) {
+        GetWorld()->GetTimerManager().PauseTimer(PatrolTimerHandle);
+        Chase();
+    } else {
+        GetWorld()->GetTimerManager().UnPauseTimer(PatrolTimerHandle);
+    }
 }
 
 void ACKPoliceAIController::SetWantedLevel(int32 Level)
