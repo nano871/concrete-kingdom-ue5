@@ -21,6 +21,7 @@ public:
     UCKBusinessComponent();
     UFUNCTION(BlueprintCallable) void DefineBusinesses();
     UFUNCTION(BlueprintCallable) void StartCapture(FName BusinessID);
+    virtual void Tick(float DeltaTime) override;
     UFUNCTION(BlueprintCallable) float GetPassiveIncome();
     UPROPERTY(BlueprintReadOnly) TMap<FName, FBusinessDef> Businesses;
     UPROPERTY(BlueprintReadOnly) FName NearbyBusiness;

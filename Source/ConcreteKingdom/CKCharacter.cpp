@@ -4,6 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "CKGameMode.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
 
 ACKCharacter::ACKCharacter()
@@ -19,8 +20,10 @@ ACKCharacter::ACKCharacter()
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     FollowCamera->bUsePawnControlRotation = false;
 
+    SprintSpeed = 1200.0f;
     bHasWeapon = false;
     Ammo = 0;
+    if (GetCharacterMovement()) GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
 
 void ACKCharacter::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
@@ -51,6 +54,18 @@ void ACKCharacter::Interact()
         GM->AddMoney(50);
         UE_LOG(LogTemp, Warning, TEXT("Interacted! Money: $%d"), GM->Money);
     }
+}
+
+void ACKCharacter::StartSprint()
+{
+    if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
+        MoveComp->MaxWalkSpeed = SprintSpeed;
+}
+
+void ACKCharacter::StopSprint()
+{
+    if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
+        MoveComp->MaxWalkSpeed = 600.0f;
 }
 
 void ACKCharacter::Shoot()

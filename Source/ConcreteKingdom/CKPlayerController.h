@@ -19,6 +19,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* LookAction;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    class UInputAction* SprintAction;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* JumpAction;
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     class UInputAction* InteractAction;
@@ -27,6 +29,8 @@ public:
 
     void OnMove(const FInputActionValue& V);
     void OnLook(const FInputActionValue& V);
+    void OnStartSprint();
+    void OnStopSprint();
     void OnJump();
     void OnInteract();
     void OnShoot();

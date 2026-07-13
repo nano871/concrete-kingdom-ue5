@@ -1,0 +1,19 @@
+# UE5 generated files
+Intermediate/
+Saved/
+DerivedDataCache/
+Binaries/
+.vscode/
+.vs/
+*.sln
+*.suo
+*.user
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.sdf
+*.db
+*.cache
+*.log
+Build/
+Manifest_DebugFiles.xml

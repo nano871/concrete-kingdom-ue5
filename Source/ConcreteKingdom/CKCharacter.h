@@ -22,10 +22,18 @@ public:
     void Move(const struct FInputActionValue& Value);
     void Look(const struct FInputActionValue& Value);
     void StartJump();
+    void StartSprint();
+    void StopSprint();
     void Interact();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float SprintSpeed;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     bool bHasWeapon;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float SprintSpeed;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     int32 Ammo;

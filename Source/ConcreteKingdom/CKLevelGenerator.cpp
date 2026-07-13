@@ -37,6 +37,27 @@ void ACKLevelGenerator::GenerateCompleteLevel()
     GroundComp->RegisterComponent();
     Ground->SetRootComponent(GroundComp);
 
+    // Roads (grid pattern)
+    const float BlockW = TotalSize / 3.0f;
+    for (int32 i = 0; i < 4; i++)
+    {
+        float Pos = -TotalSize / 2 + i * BlockW + BlockW / 2;
+        // N-S road
+        AActor* NSRoad = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), FVector(Pos, 0, -4.0f), FRotator::ZeroRotator, SpawnParams);
+        UStaticMeshComponent* NSComp = NewObject<UStaticMeshComponent>(NSRoad);
+        NSComp->SetStaticMesh(CubeMesh);
+        NSComp->SetWorldScale3D(FVector(0.15f, TotalSize / 100.0f, 0.05f));
+        NSComp->RegisterComponent();
+        NSRoad->SetRootComponent(NSComp);
+        // E-W road
+        AActor* EWRoad = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), FVector(0, Pos, -4.0f), FRotator::ZeroRotator, SpawnParams);
+        UStaticMeshComponent* EWComp = NewObject<UStaticMeshComponent>(EWRoad);
+        EWComp->SetStaticMesh(CubeMesh);
+        EWComp->SetWorldScale3D(FVector(TotalSize / 100.0f, 0.15f, 0.05f));
+        EWComp->RegisterComponent();
+        EWRoad->SetRootComponent(EWComp);
+    }
+
     // 4x4 city block
     for (int32 Col = 0; Col < 4; Col++)
     {

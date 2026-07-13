@@ -1,4 +1,6 @@
 #include "CKBusinessComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 #include "Engine/World.h"
 
 UCKBusinessComponent::UCKBusinessComponent()
@@ -26,6 +28,20 @@ void UCKBusinessComponent::DefineBusinesses()
         Businesses.Add(B.BusinessID, B);
     }
     UE_LOG(LogTemp, Warning, TEXT("Defined %d businesses"), Businesses.Num());
+}
+
+void UCKBusinessComponent::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    NearbyBusiness = FName("None");
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    if (!Player) return;
+    float BestDist = 500.0f;
+    for (auto& Pair : Businesses)
+    {
+        float D = FVector::Dist(Player->GetActorLocation(), Pair.Value.Location);
+        if (D < BestDist) { BestDist = D; NearbyBusiness = Pair.Key; }
+    }
 }
 
 void UCKBusinessComponent::StartCapture(FName BusinessID)
