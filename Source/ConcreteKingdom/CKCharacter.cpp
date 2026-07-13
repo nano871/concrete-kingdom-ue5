@@ -4,6 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "CKGameMode.h"
+#include "Engine/World.h"
 
 ACKCharacter::ACKCharacter()
 {
@@ -22,21 +23,13 @@ ACKCharacter::ACKCharacter()
     Ammo = 0;
 }
 
-void ACKCharacter::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
-}
-
-void ACKCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
+void ACKCharacter::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
+void ACKCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) { Super::SetupPlayerInputComponent(PlayerInputComponent); }
 
 void ACKCharacter::Move(const FInputActionValue& Value)
 {
     FVector2D MoveVector = Value.Get<FVector2D>();
-    if (Controller)
-    {
+    if (Controller) {
         AddMovementInput(GetActorForwardVector(), MoveVector.Y);
         AddMovementInput(GetActorRightVector(), MoveVector.X);
     }
@@ -64,5 +57,5 @@ void ACKCharacter::Shoot()
 {
     if (!bHasWeapon || Ammo <= 0) return;
     Ammo--;
-    UE_LOG(LogTemp, Warning, TEXT("Shot! Ammo: %d"), Ammo);
+    UE_LOG(LogTemp, Warning, TEXT("Shot! Ammo left: %d"), Ammo);
 }

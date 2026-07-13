@@ -30,5 +30,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     int32 Ammo;
 
+    UFUNCTION(BlueprintCallable, Category = "Combat")
     void Shoot();
 };

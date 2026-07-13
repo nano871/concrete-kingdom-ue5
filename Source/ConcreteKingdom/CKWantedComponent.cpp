@@ -1,3 +1,4 @@
+// UE5.8 - GTA V style 5-star wanted system
 #include "CKWantedComponent.h"
 
 UCKWantedComponent::UCKWantedComponent()
@@ -14,13 +15,14 @@ UCKWantedComponent::UCKWantedComponent()
 void UCKWantedComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    if (WantedLevel > 0 && StarProgress <= 0) {
+    if (WantedLevel > 0 && StarProgress <= 0)
+    {
         HeatDecayTimer += DeltaTime;
-        if (HeatDecayTimer >= DecayTimes[WantedLevel]) {
-            int32 Old = WantedLevel;
+        if (HeatDecayTimer >= DecayTimes[WantedLevel])
+        {
             WantedLevel = FMath::Max(0, WantedLevel - 1);
             HeatDecayTimer = 0.0f;
-            if (WantedLevel != Old) UE_LOG(LogTemp, Warning, TEXT("Wanted level dropped to %d"), WantedLevel);
+            UE_LOG(LogTemp, Warning, TEXT("Wanted level dropped to %d"), WantedLevel);
         }
     }
 }
@@ -28,11 +30,11 @@ void UCKWantedComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 void UCKWantedComponent::AddHeat(float Amount)
 {
     StarProgress += Amount;
-    if (StarProgress >= 1.0f && WantedLevel < 5) {
+    if (StarProgress >= 1.0f && WantedLevel < 5)
+    {
         StarProgress = 0.0f;
         WantedLevel++;
         HeatDecayTimer = 0.0f;
-        UE_LOG(LogTemp, Warning, TEXT("Wanted level increased to %d"), WantedLevel);
     }
 }
 
