@@ -1,10 +1,10 @@
 # Concrete Kingdom — UE5
 
-Open-world crime sandbox. Built in Unreal Engine 5.4.
+Open-world crime sandbox. Built in Unreal Engine **5.8**.
 
 ## Setup
 
-1. **Install UE5.4** from Epic Games Launcher
+1. **Install UE5.8** from Epic Games Launcher
 2. **Clone this repo** to your PC
 3. Right-click `ConcreteKingdom.uproject` → **Generate Visual Studio project files**
 4. Open `ConcreteKingdom.sln` → **Build** (Ctrl+Shift+B)
