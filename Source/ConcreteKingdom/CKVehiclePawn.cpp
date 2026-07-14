@@ -1,3 +1,4 @@
+// UE5.8 - Chaos Vehicle API
 #include "CKVehiclePawn.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -20,30 +21,51 @@ ACKVehiclePawn::ACKVehiclePawn()
 }
 
 void ACKVehiclePawn::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
+
 void ACKVehiclePawn::SetupPlayerInputComponent(UInputComponent* PIC) { Super::SetupPlayerInputComponent(PIC); }
 
 void ACKVehiclePawn::MoveForward(const FInputActionValue& Value)
 {
     float Scale = Value.Get<float>();
+#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 8
+    if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovement())
+        MoveComp->SetThrottleInput(Scale);
+#else
     if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovementComponent())
         MoveComp->SetThrottleInput(Scale);
+#endif
 }
 
 void ACKVehiclePawn::MoveRight(const FInputActionValue& Value)
 {
     float Scale = Value.Get<float>();
+#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 8
+    if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovement())
+        MoveComp->SetSteeringInput(Scale);
+#else
     if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovementComponent())
         MoveComp->SetSteeringInput(Scale);
+#endif
 }
 
 void ACKVehiclePawn::Handbrake()
 {
+#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 8
+    if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovement())
+        MoveComp->SetHandbrakeInput(true);
+#else
     if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovementComponent())
         MoveComp->SetHandbrakeInput(true);
+#endif
 }
 
 void ACKVehiclePawn::ReleaseHandbrake()
 {
+#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 8
+    if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovement())
+        MoveComp->SetHandbrakeInput(false);
+#else
     if (UChaosVehicleMovementComponent* MoveComp = GetVehicleMovementComponent())
         MoveComp->SetHandbrakeInput(false);
+#endif
 }
