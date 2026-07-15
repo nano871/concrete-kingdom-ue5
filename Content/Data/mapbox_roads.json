@@ -1,0 +1,79 @@
+{
+  "name": "unknown",
+  "center": [
+    34.05,
+    -118.25
+  ],
+  "roads": [
+    {
+      "name": "Main Street",
+      "type": "primary",
+      "points": [
+        [
+          34.05,
+          -118.26
+        ],
+        [
+          34.05,
+          -118.24
+        ]
+      ]
+    },
+    {
+      "name": "Broadway",
+      "type": "secondary",
+      "points": [
+        [
+          34.04,
+          -118.25
+        ],
+        [
+          34.06,
+          -118.25
+        ]
+      ]
+    },
+    {
+      "name": "Spring Street",
+      "type": "secondary",
+      "points": [
+        [
+          34.05,
+          -118.255
+        ],
+        [
+          34.05,
+          -118.245
+        ]
+      ]
+    },
+    {
+      "name": "Hope Street",
+      "type": "tertiary",
+      "points": [
+        [
+          34.045,
+          -118.25
+        ],
+        [
+          34.055,
+          -118.25
+        ]
+      ]
+    },
+    {
+      "name": "Grand Avenue",
+      "type": "tertiary",
+      "points": [
+        [
+          34.05,
+          -118.255
+        ],
+        [
+          34.05,
+          -118.245
+        ]
+      ]
+    }
+  ]
+}
