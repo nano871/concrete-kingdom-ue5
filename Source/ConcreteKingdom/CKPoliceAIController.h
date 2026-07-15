@@ -13,10 +13,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite) float ChaseSpeed;
     UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 WantedLevel;
     UFUNCTION(BlueprintCallable) void SetWantedLevel(int32 Level);
+    UFUNCTION(BlueprintCallable) void ResetChase();
 protected:
     virtual void BeginPlay() override;
     void Patrol();
     void Chase();
     FTimerHandle PatrolTimerHandle;
     FVector PatrolOrigin;
+    bool bHelicopterSpawned;
+    bool bRoadblockSpawned;
 };

@@ -30,9 +30,9 @@ void ACKLevelGenerator::GenerateCompleteLevel()
     UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
     if (!CubeMesh || !PlaneMesh) return;
 
-    const float WorldSize = 10000.0f;
+    const float WorldSize = 16000.0f; // expanded 8x8 city
     const float RoadWidth = 400.0f;
-    const float BlockSize = (WorldSize - RoadWidth * 3) / 4.0f;
+    const float BlockSize = (WorldSize - RoadWidth * 5) / 6.0f;
 
     // ── Ground ──
     AActor* Ground = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), FVector(0, 0, -5), FRotator::ZeroRotator, SpawnParams);
@@ -68,11 +68,11 @@ void ACKLevelGenerator::GenerateCompleteLevel()
     }
 
     // ── Buildings in each block ──
-    for (int32 Col = 0; Col < 4; Col++)
+    for (int32 Col = 0; Col < 6; Col++)
     {
-        for (int32 Row = 0; Row < 4; Row++)
+        for (int32 Row = 0; Row < 6; Row++)
         {
-            float CX = -WorldSize / 2 + RoadWidth + Col * (BlockSize + RoadWidth) + RoadWidth / 2 + BlockSize / 4;
+            float CX = -WorldSize / 2 + RoadWidth + Col * (BlockSize + RoadWidth) + RoadWidth / 2 + BlockSize / 5;
             float CY = -WorldSize / 2 + RoadWidth + Row * (BlockSize + RoadWidth) + RoadWidth / 2 + BlockSize / 4;
 
             for (int32 BX = 0; BX < 2; BX++)
@@ -110,5 +110,5 @@ void ACKLevelGenerator::GenerateCompleteLevel()
         Sun->SetActorRotation(FRotator(-45, 30, 0));
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("Concrete Kingdom level generated: 4x4 block city with roads, buildings, lighting, player start"));
+    UE_LOG(LogTemp, Warning, TEXT("Concrete Kingdom level generated: 6x6 block city with roads, buildings, lighting, player start"));
 }

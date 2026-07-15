@@ -50,4 +50,33 @@ void ACKPoliceAIController::Chase()
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (Player) MoveToActor(Player, 200.0f);
+
+    // Spawn helicopter at wanted 3+
+    if (WantedLevel >= 3 && !bHelicopterSpawned)
+    {
+        bHelicopterSpawned = true;
+        FVector HeliPos = Player ? Player->GetActorLocation() + FVector(0, 0, 2000) : FVector(0, 0, 2000);
+        AActor* Heli = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), HeliPos, FRotator::ZeroRotator);
+        if (Heli) Heli->SetActorLabel(TEXT("PoliceHelicopter"));
+        UE_LOG(LogTemp, Warning, TEXT("Police helicopter deployed!"));
+    }
+
+    // Spawn roadblock at wanted 3+
+    if (WantedLevel >= 3 && !bRoadblockSpawned)
+    {
+        bRoadblockSpawned = true;
+        if (Player)
+        {
+            FVector BlockLoc = Player->GetActorLocation() + Player->GetActorForwardVector() * 1000;
+            AActor* Block = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), BlockLoc, FRotator::ZeroRotator);
+            if (Block) Block->SetActorLabel(TEXT("Roadblock"));
+        }
+        UE_LOG(LogTemp, Warning, TEXT("Roadblock deployed!"));
+    }
+}
+
+void ACKPoliceAIController::ResetChase()
+{
+    bHelicopterSpawned = false;
+    bRoadblockSpawned = false;
 }
