@@ -1,4 +1,4 @@
-// UE5.8 - Weapon system with aiming, shooting, buying
+// UE5.8 - Weapon system with aiming, shooting, buying, GTA V recoil patterns
 #include "CKWeaponComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -14,6 +14,13 @@ UCKWeaponComponent::UCKWeaponComponent()
     EquippedWeapon = TEXT("");
     AimFOV = 50.0f;
     CurrentFOV = 90.0f;
+    // Recoil state (from GTA V research)
+    CurrentSpread = 0.03f;
+    BaseSpread = 0.03f;
+    BloomPerShot = 0.015f;
+    SpreadRecovery = 0.1f;
+    MaxSpread = 0.12f;
+    SpreadDecayDelay = 0.0f;
 }
 
 void UCKWeaponComponent::DefineWeapons()
@@ -74,6 +81,9 @@ void UCKWeaponComponent::Shoot()
 
     W->CurrentAmmo--;
     ShootTimer = 0.0f;
+    SpreadDecayDelay = 0.5f; // pause recovery briefly after firing
+    // Bloom increase per shot (recoil builds up)
+    CurrentSpread = FMath::Min(MaxSpread, CurrentSpread + BloomPerShot);
 
     // Line trace from camera center
     ACharacter* Char = Cast<ACharacter>(GetOwner());
@@ -83,6 +93,13 @@ void UCKWeaponComponent::Shoot()
 
     FVector Start = Cam->GetComponentLocation();
     FVector Forward = Cam->GetForwardVector();
+    // Apply recoil spread (GTA V bloom cone)
+    float AimMultiplier = bAiming ? 0.6f : 1.0f;
+    float Theta = FMath::FRand() * PI * 2.0f;
+    float Phi = CurrentSpread * AimMultiplier * FMath::FRand();
+    Forward = Forward.RotateAngleAxis(Phi * 180.0f / PI, Cam->GetUpVector());
+    Forward = Forward.RotateAngleAxis(Theta * 180.0f / PI, Cam->GetRightVector());
+    
     FVector End = Start + Forward * 10000.0f;
 
     FHitResult Hit;
@@ -130,6 +147,16 @@ void UCKWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     ShootTimer += DeltaTime;
+
+    // Spread recovery (GTA V: recovers ~0.1 rad/sec after 0.5s of not firing)
+    if (SpreadDecayDelay > 0.0f)
+    {
+        SpreadDecayDelay -= DeltaTime;
+    }
+    else if (CurrentSpread > BaseSpread)
+    {
+        CurrentSpread = FMath::Max(BaseSpread, CurrentSpread - SpreadRecovery * DeltaTime);
+    }
 }
 
 int32 UCKWeaponComponent::GetCurrentAmmo()

@@ -133,11 +133,17 @@ void UCKTrafficManager::SpawnVehicle()
     // Store waypoint index and lane ref on the actor
     Vehicle->Tags.Add(FName("TrafficVehicle"));
     
-    // Create a simple follower component
+    // IDM parameters for car-following
     UCKTrafficVehicleComponent* Follower = NewObject<UCKTrafficVehicleComponent>(Vehicle);
     Follower->CurrentLaneIndex = LaneIdx;
     Follower->CurrentWaypoint = WpIdx;
-    Follower->Speed = Lane.SpeedLimit * (0.5f + FMath::FRand() * 0.3f);
+    Follower->Speed = 0.0f; // start stopped
+    Follower->DesiredSpeed = Lane.SpeedLimit * (0.5f + FMath::FRand() * 0.3f);
+    Follower->TimeHeadway = 1.8f; // 1.8 second following distance (GTA V typical)
+    Follower->MaxAcceleration = 200.0f;
+    Follower->ComfortableBraking = 150.0f;
+    Follower->MinimumGap = 200.0f; // minimum bumper-to-bumper gap in cm
+    Follower->bInitialized = true;
     Follower->RegisterComponent();
 
     ActiveVehicles.Add(Vehicle);
@@ -149,10 +155,28 @@ void UCKTrafficManager::UpdateVehicles(float DeltaTime)
     {
         if (!IsValid(V)) continue;
         UCKTrafficVehicleComponent* Follower = V->FindComponentByClass<UCKTrafficVehicleComponent>();
-        if (!Follower || Follower->CurrentLaneIndex >= RoadLanes.Num()) continue;
+        if (!Follower || !Follower->bInitialized || Follower->CurrentLaneIndex >= RoadLanes.Num()) continue;
 
         FRoadLane& Lane = RoadLanes[Follower->CurrentLaneIndex];
         if (!Lane.Waypoints.IsValidIndex(Follower->CurrentWaypoint)) continue;
+
+        // Find distance to lead vehicle (same lane, ahead)
+        float LeadDist = 100000.0f;
+        float LeadSpeed = 0.0f;
+        for (AActor* Other : ActiveVehicles)
+        {
+            if (Other == V || !IsValid(Other)) continue;
+            UCKTrafficVehicleComponent* OtherF = Other->FindComponentByClass<UCKTrafficVehicleComponent>();
+            if (!OtherF || OtherF->CurrentLaneIndex != Follower->CurrentLaneIndex) continue;
+            if (OtherF->CurrentWaypoint <= Follower->CurrentWaypoint) continue;
+            float D = FVector::Dist(V->GetActorLocation(), Other->GetActorLocation());
+            if (D < LeadDist) { LeadDist = D; LeadSpeed = OtherF->Speed; }
+        }
+
+        // IDM acceleration
+        float Accel = Follower->IDMAcceleration(Follower->Speed, LeadDist, LeadSpeed);
+        Follower->Speed += Accel * DeltaTime;
+        Follower->Speed = FMath::Clamp(Follower->Speed, 0.0f, Follower->DesiredSpeed * 1.1f);
 
         FVector Target = Lane.Waypoints[Follower->CurrentWaypoint];
         FVector Current = V->GetActorLocation();

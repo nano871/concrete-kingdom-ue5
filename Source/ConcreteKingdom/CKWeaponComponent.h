@@ -43,4 +43,12 @@ private:
     float ShootCooldown;
     float ShootTimer;
     float CurrentFOV;
+
+    // Recoil/bloom state (GTA V research)
+    float CurrentSpread;
+    float BaseSpread;
+    float BloomPerShot;
+    float SpreadRecovery;
+    float MaxSpread;
+    float SpreadDecayDelay;
 };
