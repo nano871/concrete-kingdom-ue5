@@ -21,7 +21,10 @@ public class ConcreteKingdom : ModuleRules
 			"GameplayTasks",
 			"UMG",
 			"Slate",
-			"SlateCore"
+			"SlateCore",
+			"HTTP",
+			"Json",
+			"JsonUtilities"
 		});
 	}
 }
