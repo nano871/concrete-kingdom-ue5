@@ -12,6 +12,9 @@ UCKInteriorComponent::UCKInteriorComponent()
 
 void UCKInteriorComponent::EnterInterior(FString InteriorType)
 {
+    if (!GetWorld()) return;
+    ACharacter* Char = Cast<ACharacter>(GetOwner());(FString InteriorType)
+{
     ACharacter* Char = Cast<ACharacter>(GetOwner());
     if (!Char) return;
 

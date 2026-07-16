@@ -22,6 +22,7 @@ void ACKCityGenerator::BeginPlay()
 
 void ACKCityGenerator::GenerateCity()
 {
+    if (!GetWorld()) return;
     ClearCity();
 
     UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));

@@ -20,6 +20,10 @@ UCKDayNightComponent::UCKDayNightComponent()
 void UCKDayNightComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    if (!GetWorld()) return;
+(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
     TimeOfDay += DeltaTime * DaySpeed;
     if (TimeOfDay > 24.0f) TimeOfDay -= 24.0f;

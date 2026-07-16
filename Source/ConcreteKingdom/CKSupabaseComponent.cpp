@@ -20,6 +20,7 @@ void UCKSupabaseComponent::BeginPlay()
 
 void UCKSupabaseComponent::FetchEconomy()
 {
+    if (!GetWorld()) return;
     FHttpModule* Http = &FHttpModule::Get();
     TSharedRef<IHttpRequest> Request = Http->CreateRequest();
     Request->SetURL(SupabaseURL + "/rest/v1/economy?select=key,value,category");

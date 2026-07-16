@@ -103,6 +103,7 @@ FDistrictDef UCKDistrictComponent::GetDistrictAtLocation(FVector WorldLocation)
 
 FDistrictDef UCKDistrictComponent::GetCurrentDistrict()
 {
+    if (!GetWorld()) return FDistrictDef();
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!Player) return FDistrictDef();
     return GetDistrictAtLocation(Player->GetActorLocation());
