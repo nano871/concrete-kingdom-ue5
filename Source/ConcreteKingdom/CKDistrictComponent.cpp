@@ -1,92 +1,104 @@
-// District system with gameplay tradeoffs — from procedural generation research
+// District system with 24-hour NPC spawn curves and 3-tier AI LOD
+// From Cyberpunk 2077 NPC population research
 #include "CKDistrictComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 UCKDistrictComponent::UCKDistrictComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
+    TimeOfDay = 12.0f;
+}
+
+void UCKDistrictComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    // Time advances 1 game hour per ~10 real seconds
+    TimeOfDay += DeltaTime * 0.1f;
+    if (TimeOfDay > 24.0f) TimeOfDay -= 24.0f;
+}
+
+FString UCKDistrictComponent::GetDistrictForGrid(int32 Col, int32 Row)
+{
+    if (Col == 3 && Row == 3) return "central";
+    if (Col >= 3 && Row >= 3) return "commercial";
+    if (Col < 3 && Row >= 3) return "residential";
+    if (Col >= 3 && Row < 3) return "industrial";
+    return "entertainment";
 }
 
 void UCKDistrictComponent::DefineDistricts()
 {
     Districts.Empty();
 
-    // Commercial: high density, fast police, good loot, high risk
+    // Commercial: busy during day, quiet at night
     FDistrictDef Commercial;
     Commercial.Name = "commercial";
-    Commercial.Color = FLinearColor(0.3f, 0.5f, 0.8f); // blue
-    Commercial.NPC_Density = 0.9f;     // lots of witnesses
-    Commercial.PoliceResponse = 0.9f;   // cops arrive fast
-    Commercial.LootMultiplier = 1.5f;   // richer stores
-    Commercial.WantedRisk = 1.3f;       // heat builds faster (cameras + witnesses)
-    Commercial.BuildingHeight = 0.8f;   // tall buildings
+    Commercial.NPC_Density = 0.9f;
+    Commercial.PoliceResponse = 0.9f;
+    Commercial.LootMultiplier = 1.5f;
+    Commercial.WantedRisk = 1.3f;
+    Commercial.BuildingHeight = 0.8f;
+    Commercial.HourlySpawnCurve = {0.1f,0.1f,0.1f,0.1f,0.1f,0.2f,0.4f,0.7f,0.9f,1.0f,1.0f,1.0f,1.0f,0.9f,0.9f,0.8f,0.7f,0.5f,0.3f,0.2f,0.1f,0.1f,0.1f,0.1f};
     Districts.Add("commercial", Commercial);
 
-    // Industrial: low density, slow police, medium loot, low risk
+    // Industrial: early morning spike, quiet otherwise
     FDistrictDef Industrial;
     Industrial.Name = "industrial";
-    Industrial.Color = FLinearColor(0.5f, 0.4f, 0.3f); // brown
-    Industrial.NPC_Density = 0.3f;      // few witnesses
-    Industrial.PoliceResponse = 0.4f;    // cops take time
-    Industrial.LootMultiplier = 1.0f;    // standard payouts
-    Industrial.WantedRisk = 0.6f;        // easy to get away
-    Industrial.BuildingHeight = 0.5f;    // warehouses
+    Industrial.NPC_Density = 0.3f;
+    Industrial.PoliceResponse = 0.4f;
+    Industrial.LootMultiplier = 1.0f;
+    Industrial.WantedRisk = 0.6f;
+    Industrial.BuildingHeight = 0.5f;
+    Industrial.HourlySpawnCurve = {0.1f,0.1f,0.1f,0.1f,0.3f,0.8f,1.0f,0.9f,0.7f,0.5f,0.4f,0.4f,0.3f,0.3f,0.3f,0.3f,0.5f,0.7f,0.3f,0.1f,0.1f,0.1f,0.1f,0.1f};
     Districts.Add("industrial", Industrial);
 
-    // Residential: low density, medium police, low loot, medium risk
+    // Residential: active evening, quiet day
     FDistrictDef Residential;
     Residential.Name = "residential";
-    Residential.Color = FLinearColor(0.4f, 0.7f, 0.4f); // green
     Residential.NPC_Density = 0.5f;
     Residential.PoliceResponse = 0.6f;
-    Residential.LootMultiplier = 0.5f;   // less money in homes
+    Residential.LootMultiplier = 0.5f;
     Residential.WantedRisk = 0.8f;
-    Residential.BuildingHeight = 0.3f;   // low houses
+    Residential.BuildingHeight = 0.3f;
+    Residential.HourlySpawnCurve = {0.8f,0.7f,0.5f,0.3f,0.2f,0.2f,0.3f,0.4f,0.3f,0.2f,0.2f,0.2f,0.2f,0.2f,0.2f,0.3f,0.5f,0.7f,0.9f,1.0f,0.9f,0.8f,0.8f,0.8f};
     Districts.Add("residential", Residential);
 
-    // Entertainment: very high density, fast police, very good loot, very high risk
+    // Entertainment: nightlife peak
     FDistrictDef Entertainment;
     Entertainment.Name = "entertainment";
-    Entertainment.Color = FLinearColor(0.8f, 0.3f, 0.6f); // pink
     Entertainment.NPC_Density = 1.0f;
     Entertainment.PoliceResponse = 1.0f;
-    Entertainment.LootMultiplier = 2.0f; // clubs, casinos
-    Entertainment.WantedRisk = 1.5f;     // max risk
-    Entertainment.BuildingHeight = 0.9f; // highrises
+    Entertainment.LootMultiplier = 2.0f;
+    Entertainment.WantedRisk = 1.5f;
+    Entertainment.BuildingHeight = 0.9f;
+    Entertainment.HourlySpawnCurve = {0.5f,0.4f,0.3f,0.2f,0.1f,0.1f,0.1f,0.1f,0.1f,0.2f,0.3f,0.4f,0.5f,0.5f,0.5f,0.6f,0.7f,0.8f,0.9f,1.0f,1.0f,0.9f,0.8f,0.7f};
     Districts.Add("entertainment", Entertainment);
 
-    // Central (city center, block 0,0): balanced high-end
+    // Central: balanced, steady density
     FDistrictDef Central;
     Central.Name = "central";
-    Central.Color = FLinearColor(0.7f, 0.7f, 0.7f); // gray
     Central.NPC_Density = 0.7f;
     Central.PoliceResponse = 0.8f;
     Central.LootMultiplier = 1.2f;
     Central.WantedRisk = 1.0f;
     Central.BuildingHeight = 0.7f;
+    Central.HourlySpawnCurve = {0.2f,0.2f,0.2f,0.2f,0.2f,0.3f,0.5f,0.7f,0.8f,0.9f,0.9f,0.9f,0.8f,0.8f,0.8f,0.8f,0.7f,0.7f,0.6f,0.5f,0.4f,0.3f,0.2f,0.2f};
     Districts.Add("central", Central);
 
-    UE_LOG(LogTemp, Warning, TEXT("Defined %d districts with gameplay tradeoffs"), Districts.Num());
+    UE_LOG(LogTemp, Warning, TEXT("Defined %d districts with 24-hour spawn curves"), Districts.Num());
 }
 
 FDistrictDef UCKDistrictComponent::GetDistrictAtLocation(FVector WorldLocation)
 {
-    // Determine district by position in the 6x6 grid
     const float WorldSize = 16000.0f;
     const float BlockSize = (WorldSize - 400.0f * 5) / 6.0f;
-    
     int32 Col = FMath::FloorToInt((WorldLocation.X + WorldSize / 2) / (BlockSize + 400.0f));
     int32 Row = FMath::FloorToInt((WorldLocation.Y + WorldSize / 2) / (BlockSize + 400.0f));
-    
-    // Center block (3,3) is central district
-    if (Col == 3 && Row == 3) return *Districts.Find("central");
-    
-    // Quadrants: NE=commercial, NW=residential, SE=industrial, SW=entertainment
-    if (Col >= 3 && Row >= 3) return *Districts.Find("commercial");
-    if (Col < 3 && Row >= 3) return *Districts.Find("residential");
-    if (Col >= 3 && Row < 3) return *Districts.Find("industrial");
-    return *Districts.Find("entertainment");
+    FString Name = GetDistrictForGrid(Col, Row);
+    FDistrictDef* Found = Districts.Find(Name);
+    return Found ? *Found : FDistrictDef();
 }
 
 FDistrictDef UCKDistrictComponent::GetCurrentDistrict()
@@ -94,4 +106,22 @@ FDistrictDef UCKDistrictComponent::GetCurrentDistrict()
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!Player) return FDistrictDef();
     return GetDistrictAtLocation(Player->GetActorLocation());
+}
+
+float UCKDistrictComponent::GetCurrentSpawnRate()
+{
+    FDistrictDef District = GetCurrentDistrict();
+    int32 Hour = FMath::FloorToInt(TimeOfDay) % 24;
+    if (District.HourlySpawnCurve.IsValidIndex(Hour))
+        return District.HourlySpawnCurve[Hour] * District.NPC_Density;
+    return 0.5f;
+}
+
+bool UCKDistrictComponent::ShouldSpawnHighLOD(FVector NPC_Location)
+{
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    if (!Player) return false;
+    float Dist = FVector::Dist(Player->GetActorLocation(), NPC_Location);
+    // 3-tier LOD: high (<30m), medium (30-80m), low (>80m)
+    return Dist < 3000.0f; // game units, ~30m in UE5 scale
 }
