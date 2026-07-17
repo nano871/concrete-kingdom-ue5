@@ -8,6 +8,35 @@ ACKPlayerController::ACKPlayerController() { bShowMouseCursor = false; }
 void ACKPlayerController::BeginPlay()
 {
     Super::BeginPlay();
+
+    // Create main HUD
+    if (IsLocalPlayerController())
+    {
+        HUDWidget = CreateWidget<UCKHUDWidget>(this, LoadClass<UCKHUDWidget>(nullptr, TEXT("/Script/ConcreteKingdom.CKHUDWidget")));
+        if (HUDWidget)
+        {
+            HUDWidget->AddToViewport(0);
+            UE_LOG(LogTemp, Warning, TEXT("PlayerController: HUD created"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("PlayerController: HUD creation failed - create a Blueprint child of CKHUDWidget"));
+        }
+
+        // Create pause menu
+        PauseMenu = CreateWidget<UCKPauseMenuWidget>(this, UCKPauseMenuWidget::StaticClass());
+        if (PauseMenu) PauseMenu->ClosePauseMenu();
+
+        // Create weapon wheel
+        WeaponWheel = CreateWidget<UCKWeaponWheelWidget>(this, UCKWeaponWheelWidget::StaticClass());
+        if (WeaponWheel) WeaponWheel->CloseWheel();
+
+        // Create phone
+        PhoneScreen = CreateWidget<UCKPhoneScreenWidget>(this, UCKPhoneScreenWidget::StaticClass());
+        if (PhoneScreen) PhoneScreen->ClosePhone();
+    }
+
+    Super::BeginPlay();
     if (ULocalPlayer* LP = GetLocalPlayer())
     {
         if (UEnhancedInputLocalPlayerSubsystem* SS = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())

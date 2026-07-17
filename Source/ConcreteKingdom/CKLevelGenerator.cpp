@@ -9,8 +9,10 @@
 #include "Engine/DirectionalLight.h"
 #include "Engine/SkyLight.h"
 #include "Engine/ExponentialHeightFog.h"
+#include "CKMissionGiverActor.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "CKBankInteriorActor.h"
 
 ACKLevelGenerator::ACKLevelGenerator()
 {
@@ -160,6 +162,40 @@ void ACKLevelGenerator::GenerateCompleteLevel()
         DNC = NewObject<UCKDayNightComponent>(this);
         DNC->RegisterComponent();
     }
+
+    
+    // ── Mission Giver NPCs ──
+    for (int32 MI = 0; MI < 3; MI++)
+    {
+        FVector MGP = FVector(-WorldSize / 4 + MI * 2000, -WorldSize / 4, 0);
+        ACKMissionGiverActor* MG = GetWorld()->SpawnActor<ACKMissionGiverActor>(ACKMissionGiverActor::StaticClass(),
+            MGP, FRotator::ZeroRotator, SpawnParams);
+        if (MG) 
+        { 
+            MG->SetActorLabel(FString::Printf(TEXT("MissionGiver_%d"), MI));
+            MG->MissionID = FString::Printf(TEXT("m0%d_first_score"), MI + 1);
+        }
+    }
+
+    // ── Bank Interior (at a known city position) ──
+    ACKBankInteriorActor* Bank = GetWorld()->SpawnActor<ACKBankInteriorActor>(ACKBankInteriorActor::StaticClass(),
+        FVector(2000, -2000, 0), FRotator::ZeroRotator, SpawnParams);
+    if (Bank) { Bank->SetActorLabel(TEXT("Bank")); Bank->VaultMoney = 1000; }
+
+    // ── Gun Shop Interior ──
+    ACKGunShopInteriorActor* GunShop = GetWorld()->SpawnActor<ACKGunShopInteriorActor>(ACKGunShopInteriorActor::StaticClass(),
+        FVector(-2000, 2000, 0), FRotator::ZeroRotator, SpawnParams);
+    if (GunShop) GunShop->SetActorLabel(TEXT("GunShop"));
+
+    // ── Minimap Camera ──
+    ACKMinimapCameraActor* Minimap = GetWorld()->SpawnActor<ACKMinimapCameraActor>(ACKMinimapCameraActor::StaticClass(),
+        FVector(0, 0, 5000), FRotator(-90, 0, 0), SpawnParams);
+    if (Minimap) Minimap->SetActorLabel(TEXT("MinimapCam"));
+
+    // ── Helicopter (initialized, will be activated by police) ──
+    ACKHelicopterActor* HeliBackup = GetWorld()->SpawnActor<ACKHelicopterActor>(ACKHelicopterActor::StaticClass(),
+        FVector(10000, 10000, 3000), FRotator::ZeroRotator, SpawnParams);
+    if (HeliBackup) { HeliBackup->bActive = false; HeliBackup->SetActorLabel(TEXT("PoliceHeli_Reserve")); }
 
     UE_LOG(LogTemp, Warning, TEXT("Concrete Kingdom level generated: 6x6 block city with roads, buildings, lighting, player start"));
 }

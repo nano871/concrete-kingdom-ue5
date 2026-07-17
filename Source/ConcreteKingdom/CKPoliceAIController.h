@@ -1,6 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "CKHelicopterActor.h"
+#include "CKRoadblockActor.h"
 #include "CKPoliceAIController.generated.h"
 
 UCLASS()

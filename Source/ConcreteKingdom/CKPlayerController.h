@@ -34,4 +34,16 @@ public:
     void OnJump();
     void OnInteract();
     void OnShoot();
+
+    // UI Widgets - created in BeginPlay
+    UPROPERTY() class UCKHUDWidget* HUDWidget;
+    UPROPERTY() class UCKPauseMenuWidget* PauseMenu;
+    UPROPERTY() class UCKWeaponWheelWidget* WeaponWheel;
+    UPROPERTY() class UCKPhoneScreenWidget* PhoneScreen;
+
+    // Input handling
+    UFUNCTION() void OnInteract();
+    UFUNCTION() void OnPause();
+    UFUNCTION() void OnOpenWeaponWheel();
+    UFUNCTION() void OnOpenPhone();
 };

@@ -3,7 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "CKHUDWidget.generated.h"
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CONCRETEKINGDOM_API UCKHUDWidget : public UUserWidget {
     GENERATED_BODY()
 public:

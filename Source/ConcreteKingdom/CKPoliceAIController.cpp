@@ -56,8 +56,9 @@ void ACKPoliceAIController::Chase()
     {
         bHelicopterSpawned = true;
         FVector HeliPos = Player ? Player->GetActorLocation() + FVector(0, 0, 2000) : FVector(0, 0, 2000);
-        AActor* Heli = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), HeliPos, FRotator::ZeroRotator);
-        if (Heli) Heli->SetActorLabel(TEXT("PoliceHelicopter"));
+        ACKHelicopterActor* Heli = GetWorld()->SpawnActor<ACKHelicopterActor>(ACKHelicopterActor::StaticClass(), HeliPos, FRotator::ZeroRotator);
+        if (Heli) { Heli->Deploy(HeliPos); Heli->SetActorLabel(TEXT("PoliceHelicopter")); 
+            UE_LOG(LogTemp, Warning, TEXT("Helicopter deployed at 3★ wanted")); }
         UE_LOG(LogTemp, Warning, TEXT("Police helicopter deployed!"));
     }
 
@@ -68,8 +69,9 @@ void ACKPoliceAIController::Chase()
         if (Player)
         {
             FVector BlockLoc = Player->GetActorLocation() + Player->GetActorForwardVector() * 1000;
-            AActor* Block = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), BlockLoc, FRotator::ZeroRotator);
-            if (Block) Block->SetActorLabel(TEXT("Roadblock"));
+            ACKRoadblockActor* Block = GetWorld()->SpawnActor<ACKRoadblockActor>(ACKRoadblockActor::StaticClass(), BlockLoc, FRotator::ZeroRotator);
+            if (Block) { Block->Deploy(BlockLoc); Block->SetActorLabel(TEXT("Roadblock"));
+                UE_LOG(LogTemp, Warning, TEXT("Roadblock deployed at 3★ wanted")); }
         }
         UE_LOG(LogTemp, Warning, TEXT("Roadblock deployed!"));
     }
