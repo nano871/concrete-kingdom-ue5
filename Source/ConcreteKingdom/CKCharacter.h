@@ -11,6 +11,7 @@ class CONCRETEKINGDOM_API ACKCharacter : public ACharacter
 public:
     ACKCharacter();
     virtual void Tick(float DeltaTime) override;
+    virtual void BeginPlay() override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")

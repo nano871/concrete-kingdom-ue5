@@ -197,5 +197,13 @@ void ACKLevelGenerator::GenerateCompleteLevel()
         FVector(10000, 10000, 3000), FRotator::ZeroRotator, SpawnParams);
     if (HeliBackup) { HeliBackup->bActive = false; HeliBackup->SetActorLabel(TEXT("PoliceHeli_Reserve")); }
 
+    
+    // ── Model-based city assets (import in editor to use) ──
+    UE_LOG(LogTemp, Warning, TEXT("[CITY] Cube buildings used as fallback. To use 3D models:"));
+    UE_LOG(LogTemp, Warning, TEXT("[CITY]   - Import Content/Models/low_poly_buildings/scene.gltf -> replace CubeMesh"));
+    UE_LOG(LogTemp, Warning, TEXT("[CITY]   - Import Content/Models/street_lamp/scene.gltf -> place along roads"));
+    UE_LOG(LogTemp, Warning, TEXT("[CITY]   - Import Content/Models/passenger_car_pack/scene.gltf -> replace traffic car cubes"));
+    UE_LOG(LogTemp, Warning, TEXT("[CITY]   - Import Content/Textures/commercial_facade.jpg -> apply to buildings"));
+    UE_LOG(LogTemp, Warning, TEXT("[CITY]   - Import Content/Audio/*.mp3 -> enable all sound effects"));
     UE_LOG(LogTemp, Warning, TEXT("Concrete Kingdom level generated: 6x6 block city with roads, buildings, lighting, player start"));
 }
