@@ -115,15 +115,17 @@ void UCKTrafficManager::SpawnVehicle()
     int32 WpIdx = FMath::RandRange(0, Lane.Waypoints.Num() - 3);
     FVector StartPos = Lane.Waypoints[WpIdx];
 
-    UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
-    if (!CubeMesh) return;
+    // Try to load imported car mesh; fall back to cube
+    UStaticMesh* CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/scene.scene"));
+    if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+    if (!CarMesh) return;
 
     AActor* Vehicle = GetWorld()->SpawnActor<AActor>();
     if (!Vehicle) return;
 
     Vehicle->SetActorLocation(StartPos);
     UStaticMeshComponent* MeshComp = NewObject<UStaticMeshComponent>(Vehicle);
-    MeshComp->SetStaticMesh(CubeMesh);
+    MeshComp->SetStaticMesh(CarMesh);
     MeshComp->SetWorldScale3D(FVector(0.6f, 1.0f, 0.25f));
     MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     MeshComp->SetCollisionProfileName(FName("BlockAll"));
