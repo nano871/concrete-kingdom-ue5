@@ -42,4 +42,17 @@ void UCKWantedComponent::SetWantedLevel(int32 Level) { WantedLevel = FMath::Clam
 int32 UCKWantedComponent::GetSpawnCap() { return SpawnCaps.IsValidIndex(WantedLevel) ? SpawnCaps[WantedLevel] : 0; }
 float UCKWantedComponent::GetSearchRadius() { return SearchRadii.IsValidIndex(WantedLevel) ? SearchRadii[WantedLevel] : 0; }
 bool UCKWantedComponent::ShouldSpawnHelicopter() { return WantedLevel >= 3; }
-bool UCKWantedComponent::ShouldSpawnRoadblock() { return WantedLevel >= 3; }
+bool UCKWantedComponent::ShouldSpawnRoadblock() { return WantedLevel >= 3; 
+int32 UCKWantedComponent::GetWantedLevel()
+{
+    return CurrentWantedLevel;
+}
+
+void UCKWantedComponent::ClearWanted()
+{
+    CurrentWantedLevel = 0;
+    Heat = 0.0f;
+    HeatDecayTimer = 0.0f;
+}
+
+}

@@ -12,4 +12,7 @@ void UCKPhoneWidget::AddContact(FString Name, FString Status)
         ContactList->SetText(FText::FromString(FString::Join(Contacts, TEXT("\n"))));
 }
 
-void UCKPhoneWidget::ShowMissionBrief(FString Title, FString Desc) {}
+void UCKPhoneWidget::ShowMissionBrief(FString Title, FString Desc)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Mission Brief: %s - %s"), *Title, *Desc);
+}

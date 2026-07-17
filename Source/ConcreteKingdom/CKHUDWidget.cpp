@@ -1,7 +1,28 @@
+// HUD implementation - money, wanted, ammo display
 #include "CKHUDWidget.h"
 #include "Components/TextBlock.h"
-void UCKHUDWidget::UpdateHUD(int32 Money, int32 Wanted, int32 Ammo) {
-    if (MoneyText) MoneyText->SetText(FText::FromString(FString::Printf(TEXT("$%d"), Money)));
-    if (WantedText) WantedText->SetText(FText::FromString(FString::Printf(TEXT("WANTED: %d"), Wanted)));
-    if (AmmoText) AmmoText->SetText(FText::FromString(FString::Printf(TEXT("AMMO: %d"), Ammo)));
+#include "Components/Image.h"
+
+void UCKHUDWidget::UpdateMoney(int32 Amount)
+{
+    if (MoneyText)
+        MoneyText->SetText(FText::Format(NSLOCTEXT("CK", "Money", "${0}"), FText::AsNumber(Amount)));
+}
+
+void UCKHUDWidget::UpdateWanted(int32 Level)
+{
+    if (WantedText)
+    {
+        FString Stars;
+        for (int32 i = 0; i < Level; i++) Stars += TEXT("★");
+        for (int32 i = Level; i < 5; i++) Stars += TEXT("☆");
+        WantedText->SetText(FText::FromString(Stars));
+        WantedText->SetColorAndOpacity(Level > 2 ? FLinearColor::Red : FLinearColor::White);
+    }
+}
+
+void UCKHUDWidget::UpdateAmmo(int32 Current, int32 Max)
+{
+    if (AmmoText)
+        AmmoText->SetText(FText::Format(NSLOCTEXT("CK", "Ammo", "{0}/{1}"), FText::AsNumber(Current), FText::AsNumber(Max)));
 }

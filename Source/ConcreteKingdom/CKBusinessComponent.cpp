@@ -57,4 +57,23 @@ float UCKBusinessComponent::GetPassiveIncome()
     for (auto& Pair : Businesses)
         if (Pair.Value.bPlayerOwned) Total += 2.0f;
     return Total;
+
+bool UCKBusinessComponent::CaptureBusiness(FString BusinessID)
+{
+    if (OwnedBusinesses.Contains(BusinessID)) return false;
+    OwnedBusinesses.Add(BusinessID);
+    UE_LOG(LogTemp, Warning, TEXT("Business captured: %s"), *BusinessID);
+    return true;
+}
+
+int32 UCKBusinessComponent::GetTotalIncome()
+{
+    return OwnedBusinesses.Num() * PassiveIncomeRate;
+}
+
+TArray<FString> UCKBusinessComponent::GetOwnedBusinesses()
+{
+    return OwnedBusinesses;
+}
+
 }

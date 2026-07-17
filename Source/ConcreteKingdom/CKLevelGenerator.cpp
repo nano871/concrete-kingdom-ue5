@@ -142,5 +142,24 @@ void ACKLevelGenerator::GenerateCompleteLevel()
         }
     }
 
+    
+    // ── Traffic Lights at major intersections ──
+    for (int32 TI = 0; TI < 4; TI++)
+    {
+        float TX = -WorldSize / 2 + TI * (BlockSize + RoadWidth) + RoadWidth + BlockSize / 2;
+        float TY = -WorldSize / 2 + TI * (BlockSize + RoadWidth) + RoadWidth + BlockSize / 2;
+        ACKTrafficLightActor* TL = GetWorld()->SpawnActor<ACKTrafficLightActor>(ACKTrafficLightActor::StaticClass(),
+            FVector(TX, TY, 0), FRotator::ZeroRotator, SpawnParams);
+        if (TL) TL->SetActorLabel(FString::Printf(TEXT("TrafficLight_%d"), TI));
+    }
+
+    // ── Initialize Day/Night cycle ──
+    UCKDayNightComponent* DNC = FindComponentByClass<UCKDayNightComponent>();
+    if (!DNC)
+    {
+        DNC = NewObject<UCKDayNightComponent>(this);
+        DNC->RegisterComponent();
+    }
+
     UE_LOG(LogTemp, Warning, TEXT("Concrete Kingdom level generated: 6x6 block city with roads, buildings, lighting, player start"));
 }

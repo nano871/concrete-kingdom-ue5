@@ -68,7 +68,11 @@ void UCKGameAudioComponent::PlayFootstep()
 }
 
 void UCKGameAudioComponent::PlayHorn() { PlayCashPickup(); }
-void UCKGameAudioComponent::SetNightAmbient(bool bNight) {}
+void UCKGameAudioComponent::SetNightAmbient(bool bNight)
+{
+    if (AmbientLoop && AmbientLoop->IsPlaying()) return;
+    UE_LOG(LogTemp, Verbose, TEXT("Night ambient: %s"), bNight ? TEXT("ON") : TEXT("OFF"));
+}
 
 void UCKGameAudioComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
