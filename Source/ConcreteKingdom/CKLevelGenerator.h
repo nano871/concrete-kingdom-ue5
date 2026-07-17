@@ -12,6 +12,9 @@ public:
     ACKLevelGenerator();
     virtual void BeginPlay() override;
 
+    UPROPERTY() UStaticMesh* CubeMesh;
+    UPROPERTY() UStaticMesh* PlaneMesh;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup")
     TSubclassOf<class AActor> CityGeneratorClass;
 

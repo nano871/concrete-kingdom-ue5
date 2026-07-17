@@ -13,6 +13,12 @@
 ACKLevelGenerator::ACKLevelGenerator()
 {
     PrimaryActorTick.bCanEverTick = false;
+
+    // Load meshes in constructor (only place FObjectFinder is allowed)
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> PlaneFinder(TEXT("/Engine/BasicShapes/Plane.Plane"));
+    CubeMesh = CubeFinder.Object;
+    PlaneMesh = PlaneFinder.Object;
 }
 
 void ACKLevelGenerator::BeginPlay()
@@ -26,8 +32,6 @@ void ACKLevelGenerator::GenerateCompleteLevel()
     FActorSpawnParameters SpawnParams;
     SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-    UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
-    UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
     if (!CubeMesh || !PlaneMesh) return;
 
     const float WorldSize = 16000.0f; // expanded 8x8 city
