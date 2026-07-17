@@ -19,10 +19,18 @@ class CONCRETEKINGDOM_API UCKBusinessComponent : public UActorComponent {
     GENERATED_BODY()
 public:
     UCKBusinessComponent();
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+    UFUNCTION(BlueprintCallable) void InitBusinesses();
     UFUNCTION(BlueprintCallable) void DefineBusinesses();
     UFUNCTION(BlueprintCallable) void StartCapture(FName BusinessID);
-    virtual void Tick(float DeltaTime) override;
+    UFUNCTION(BlueprintCallable) bool CaptureBusiness(FString BusinessID);
+    UFUNCTION(BlueprintCallable) int32 GetTotalIncome();
     UFUNCTION(BlueprintCallable) float GetPassiveIncome();
+    UFUNCTION(BlueprintCallable) TArray<FString> GetOwnedBusinesses();
+
     UPROPERTY(BlueprintReadOnly) TMap<FName, FBusinessDef> Businesses;
     UPROPERTY(BlueprintReadOnly) FName NearbyBusiness;
+    UPROPERTY() TArray<FString> OwnedBusinesses;
+    UPROPERTY() int32 PassiveIncomeRate;
 };

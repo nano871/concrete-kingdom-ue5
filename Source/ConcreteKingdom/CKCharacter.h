@@ -34,7 +34,6 @@ public:
     bool bHasWeapon;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float SprintSpeed;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
     int32 Ammo;

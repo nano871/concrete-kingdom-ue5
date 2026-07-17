@@ -13,6 +13,7 @@ struct FMissionObjective {
     UPROPERTY(EditAnywhere) int32 Count;
     UPROPERTY(BlueprintReadOnly) int32 Progress;
     UPROPERTY(BlueprintReadOnly) bool bCompleted;
+    UFUNCTION() bool AllPrereqsMet(const struct FMissionDef& Def);
 };
 
 USTRUCT(BlueprintType)
@@ -29,6 +30,7 @@ struct FMissionDef {
     UPROPERTY() bool bCompleted;
     UPROPERTY() bool bLocked;
     UPROPERTY(EditAnywhere) FVector MissionMarkerLocation;
+    UFUNCTION() bool AllPrereqsMet(const struct FMissionDef& Def);
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMissionUpdated, FName, MissionID);
@@ -53,4 +55,5 @@ private:
     FName ActiveMissionID;
     TArray<FName> CompletedMissions;
     float TimedObjectiveAccum;
+    UFUNCTION() bool AllPrereqsMet(const struct FMissionDef& Def);
 };

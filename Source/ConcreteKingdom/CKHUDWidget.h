@@ -16,8 +16,5 @@ public:
     UPROPERTY(meta=(BindWidget)) class UTextBlock* AmmoText;
     UPROPERTY(meta=(BindWidget)) class UImage* WantedStars;
 public:
-    UPROPERTY(meta = (BindWidget)) class UTextBlock* MoneyText;
-    UPROPERTY(meta = (BindWidget)) class UTextBlock* WantedText;
-    UPROPERTY(meta = (BindWidget)) class UTextBlock* AmmoText;
     UFUNCTION(BlueprintCallable) void UpdateHUD(int32 Money, int32 Wanted, int32 Ammo);
 };

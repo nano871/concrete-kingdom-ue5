@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
+#include "GameFramework/DamageType.h"
+#include "GameFramework/PointDamageEvent.h"
 
 UCKWeaponComponent::UCKWeaponComponent()
 {

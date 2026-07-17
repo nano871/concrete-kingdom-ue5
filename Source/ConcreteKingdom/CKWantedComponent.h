@@ -12,10 +12,14 @@ public:
 
     UPROPERTY(BlueprintReadOnly) int32 WantedLevel;
     UPROPERTY(EditAnywhere, BlueprintReadWrite) float StarProgress;
+    UPROPERTY() float Heat;
+    UPROPERTY() int32 CurrentWantedLevel;
     UPROPERTY(EditAnywhere, BlueprintReadWrite) float HeatDecayTimer;
 
     UFUNCTION(BlueprintCallable) void AddHeat(float Amount);
     UFUNCTION(BlueprintCallable) void SetWantedLevel(int32 Level);
+    UFUNCTION(BlueprintCallable) int32 GetWantedLevel();
+    UFUNCTION(BlueprintCallable) void ClearWanted();
     UFUNCTION(BlueprintCallable) int32 GetSpawnCap();
     UFUNCTION(BlueprintCallable) float GetSearchRadius();
     UFUNCTION(BlueprintCallable) bool ShouldSpawnHelicopter();

@@ -6,6 +6,8 @@
 USTRUCT(BlueprintType)
 struct FBuildingDef {
     GENERATED_BODY()
+    UPROPERTY() UStaticMesh* PlaneMesh;
+    UPROPERTY() UStaticMesh* CubeMesh;
     UPROPERTY(EditAnywhere) FVector Position;
     UPROPERTY(EditAnywhere) FVector Size;
     UPROPERTY(EditAnywhere) float Height;
@@ -16,6 +18,8 @@ struct FBuildingDef {
 UCLASS()
 class CONCRETEKINGDOM_API ACKCityGenerator : public AActor {
     GENERATED_BODY()
+    UPROPERTY() UStaticMesh* PlaneMesh;
+    UPROPERTY() UStaticMesh* CubeMesh;
 public:
     ACKCityGenerator();
     virtual void BeginPlay() override;

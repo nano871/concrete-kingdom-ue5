@@ -10,6 +10,7 @@ struct FRoadLane {
     TArray<FVector> Waypoints;
     FVector Direction;
     float SpeedLimit;
+    void UpdateVehicles(float DeltaTime);
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -37,4 +38,5 @@ protected:
     TArray<class AActor*> ActiveVehicles;
     float SpawnTimer;
     float DesiredDensity;
+    void UpdateVehicles(float DeltaTime);
 };

@@ -32,7 +32,6 @@ public:
     void OnStartSprint();
     void OnStopSprint();
     void OnJump();
-    void OnInteract();
     void OnShoot();
 
     // UI Widgets - created in BeginPlay

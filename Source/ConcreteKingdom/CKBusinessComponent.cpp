@@ -6,6 +6,13 @@
 UCKBusinessComponent::UCKBusinessComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
+    PassiveIncomeRate = 2;
+}
+
+void UCKBusinessComponent::InitBusinesses()
+{
+    DefineBusinesses();
+    UE_LOG(LogTemp, Warning, TEXT("[BIZ] Initialized %d businesses"), Businesses.Num());
 }
 
 void UCKBusinessComponent::DefineBusinesses()
@@ -27,12 +34,12 @@ void UCKBusinessComponent::DefineBusinesses()
         B.bPlayerOwned = false;
         Businesses.Add(B.BusinessID, B);
     }
-    UE_LOG(LogTemp, Warning, TEXT("Defined %d businesses"), Businesses.Num());
+    UE_LOG(LogTemp, Warning, TEXT("[BIZ] Defined %d businesses"), Businesses.Num());
 }
 
-void UCKBusinessComponent::Tick(float DeltaTime)
+void UCKBusinessComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-    Super::Tick(DeltaTime);
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
     NearbyBusiness = FName("None");
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!Player) return;
@@ -57,12 +64,13 @@ float UCKBusinessComponent::GetPassiveIncome()
     for (auto& Pair : Businesses)
         if (Pair.Value.bPlayerOwned) Total += 2.0f;
     return Total;
+}
 
 bool UCKBusinessComponent::CaptureBusiness(FString BusinessID)
 {
     if (OwnedBusinesses.Contains(BusinessID)) return false;
     OwnedBusinesses.Add(BusinessID);
-    UE_LOG(LogTemp, Warning, TEXT("Business captured: %s"), *BusinessID);
+    UE_LOG(LogTemp, Warning, TEXT("[BIZ] Captured: %s"), *BusinessID);
     return true;
 }
 
@@ -74,6 +82,4 @@ int32 UCKBusinessComponent::GetTotalIncome()
 TArray<FString> UCKBusinessComponent::GetOwnedBusinesses()
 {
     return OwnedBusinesses;
-}
-
 }
