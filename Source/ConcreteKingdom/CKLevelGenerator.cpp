@@ -8,7 +8,9 @@
 #include "GameFramework/PlayerStart.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/SkyLight.h"
+#include "Engine/ExponentialHeightFog.h"
 #include "Components/SkyLightComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
 
 ACKLevelGenerator::ACKLevelGenerator()
 {
@@ -112,6 +114,32 @@ void ACKLevelGenerator::GenerateCompleteLevel()
     {
         Sun->SetMobility(EComponentMobility::Stationary);
         Sun->SetActorRotation(FRotator(-45, 30, 0));
+    }
+
+    // ── Sky Atmosphere (blue sky gradient) ──
+    AActor* SkyAtm = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), FVector(0, 0, 0), FRotator::ZeroRotator, SpawnParams);
+    if (SkyAtm) SkyAtm->SetActorLabel(TEXT("SkyAtmosphere"));
+
+    // ── Sky Light (ambient skylight from sky) ──
+    ASkyLight* SkyLight = GetWorld()->SpawnActor<ASkyLight>(ASkyLight::StaticClass(),
+        FVector(0, 0, 500), FRotator::ZeroRotator, SpawnParams);
+    if (SkyLight)
+    {
+        SkyLight->GetLightComponent()->SetIntensity(1.0f);
+        SkyLight->GetLightComponent()->SetIndirectLightingIntensity(1.0f);
+    }
+
+    // ── Exponential Height Fog (atmospheric depth) ──
+    AExponentialHeightFog* Fog = GetWorld()->SpawnActor<AExponentialHeightFog>(AExponentialHeightFog::StaticClass(),
+        FVector(0, 0, 0), FRotator::ZeroRotator, SpawnParams);
+    if (Fog)
+    {
+        UExponentialHeightFogComponent* FogComp = Fog->GetComponent();
+        if (FogComp)
+        {
+            FogComp->SetFogDensity(0.02f);
+            FogComp->FogHeightFalloff = 0.2f;
+        }
     }
 
     UE_LOG(LogTemp, Warning, TEXT("Concrete Kingdom level generated: 6x6 block city with roads, buildings, lighting, player start"));
