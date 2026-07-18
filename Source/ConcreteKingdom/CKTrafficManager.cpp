@@ -115,15 +115,17 @@ void UCKTrafficManager::SpawnVehicle()
     int32 WpIdx = FMath::RandRange(0, Lane.Waypoints.Num() - 3);
     FVector StartPos = Lane.Waypoints[WpIdx];
 
-    // Try to load imported car mesh; fall back to cube
+    // Try multiple possible car mesh paths (import-dependent naming)
     UStaticMesh* CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/scene.scene"));
+    if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/SM_Car.SM_Car"));
+    if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/SM_Vehicle.SM_Vehicle"));
     if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
     if (!CarMesh) return;
 
     AActor* Vehicle = GetWorld()->SpawnActor<AActor>();
     if (!Vehicle) return;
 
-    Vehicle->SetActorLocation(StartPos);
+    // Create mesh component first (root must exist before SetActorLocation)
     UStaticMeshComponent* MeshComp = NewObject<UStaticMeshComponent>(Vehicle);
     MeshComp->SetStaticMesh(CarMesh);
     MeshComp->SetWorldScale3D(FVector(0.6f, 1.0f, 0.25f));
@@ -131,6 +133,9 @@ void UCKTrafficManager::SpawnVehicle()
     MeshComp->SetCollisionProfileName(FName("BlockAll"));
     MeshComp->RegisterComponent();
     Vehicle->SetRootComponent(MeshComp);
+
+    // Now location will work because root component exists
+    Vehicle->SetActorLocation(StartPos);
 
     // Store waypoint index and lane ref on the actor
     Vehicle->Tags.Add(FName("TrafficVehicle"));

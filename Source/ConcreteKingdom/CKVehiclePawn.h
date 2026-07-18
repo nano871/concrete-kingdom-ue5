@@ -19,6 +19,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class USpringArmComponent* CameraBoom;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Vehicle")
+    class UStaticMeshComponent* VehicleMesh;
+
     void MoveForward(const struct FInputActionValue& Value);
     void MoveRight(const struct FInputActionValue& Value);
     void Handbrake();

@@ -13,6 +13,14 @@ ACKVehiclePawn::ACKVehiclePawn()
     // Try to load imported car mesh; fall back to engine cube
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CarMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene.scene"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+    UStaticMesh* BodyMesh = CarMeshFinder.Succeeded() ? CarMeshFinder.Object : CubeFinder.Object;
+
+    // Create visible body mesh
+    VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
+    VehicleMesh->SetupAttachment(RootComponent);
+    VehicleMesh->SetStaticMesh(BodyMesh ? BodyMesh : CubeFinder.Object);
+    VehicleMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    VehicleMesh->SetCollisionProfileName(FName("BlockAll"));
 
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
     CameraBoom->SetupAttachment(RootComponent);
