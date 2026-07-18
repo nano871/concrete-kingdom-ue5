@@ -32,6 +32,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetDesiredDensity(float Density);
 
+    UPROPERTY()
+    class UStaticMesh* CarMesh;
+
 protected:
     void SpawnVehicle();
     TArray<FRoadLane> RoadLanes;

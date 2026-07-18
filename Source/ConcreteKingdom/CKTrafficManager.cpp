@@ -13,6 +13,19 @@ UCKTrafficManager::UCKTrafficManager()
     SpawnRadius = 8000.0f;
     SpawnTimer = 0.0f;
     DesiredDensity = 1.0f;
+
+    // Load car mesh in constructor (FObjectFinder only works in constructors)
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CarMeshFinder(TEXT("/Game/Models/passenger_car_pack/SM_Car.SM_Car"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> FallbackFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
+    CarMesh = CarMeshFinder.Succeeded() ? CarMeshFinder.Object : FallbackFinder.Object;
+    if (!CarMesh) CarMesh = FallbackFinder.Object;
+
+    // Also try alternate paths for the car mesh (import naming varies)
+    if (CarMesh == FallbackFinder.Object)
+    {
+        static ConstructorHelpers::FObjectFinder<UStaticMesh> AltMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene.scene"));
+        if (AltMeshFinder.Succeeded()) CarMesh = AltMeshFinder.Object;
+    }
 }
 
 void UCKTrafficManager::BuildRoadNetwork()
@@ -115,11 +128,7 @@ void UCKTrafficManager::SpawnVehicle()
     int32 WpIdx = FMath::RandRange(0, Lane.Waypoints.Num() - 3);
     FVector StartPos = Lane.Waypoints[WpIdx];
 
-    // Try multiple possible car mesh paths (import-dependent naming)
-    UStaticMesh* CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/scene.scene"));
-    if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/SM_Car.SM_Car"));
-    if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Models/passenger_car_pack/SM_Vehicle.SM_Vehicle"));
-    if (!CarMesh) CarMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+    // Use cached car mesh loaded in constructor (FObjectFinder)
     if (!CarMesh) return;
 
     AActor* Vehicle = GetWorld()->SpawnActor<AActor>();
