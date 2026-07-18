@@ -132,7 +132,7 @@ void ACKPlayerController::OnOpenMissions()
             if (GM->Missions)
             {
                 Avail = GM->Missions->GetAvailableMissions();
-                // TODO: fetch completed list
+                // Completed list not yet fetched from save system
             }
             MissionWidget->UpdateMissionList(Avail, Completed);
         }

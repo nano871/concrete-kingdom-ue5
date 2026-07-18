@@ -11,5 +11,6 @@ public:
     UFUNCTION(BlueprintCallable) void OfferMission(FString MissionID);
     UFUNCTION(BlueprintCallable) void AcceptMission();
     UFUNCTION(BlueprintCallable) void DeclineMission();
+    UPROPERTY() bool bMissionOffered;
     UPROPERTY(EditAnywhere, BlueprintReadWrite) FString MissionID;
 };

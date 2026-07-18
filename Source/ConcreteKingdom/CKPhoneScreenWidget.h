@@ -3,6 +3,8 @@
 #include "Blueprint/UserWidget.h"
 #include "CKPhoneScreenWidget.generated.h"
 
+#include "Components/Image.h"
+
 UCLASS()
 class CONCRETEKINGDOM_API UCKPhoneScreenWidget : public UUserWidget {
     GENERATED_BODY()
