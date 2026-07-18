@@ -11,7 +11,7 @@ ACKVehiclePawn::ACKVehiclePawn()
     PrimaryActorTick.bCanEverTick = true;
 
     // Try to load imported car mesh; fall back to engine cube
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> CarMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene.scene"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CarMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene/Sedan.Sedan"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
     UStaticMesh* BodyMesh = CarMeshFinder.Succeeded() ? CarMeshFinder.Object : CubeFinder.Object;
 

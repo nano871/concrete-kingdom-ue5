@@ -15,7 +15,7 @@ UCKTrafficManager::UCKTrafficManager()
     DesiredDensity = 1.0f;
 
     // Load car mesh in constructor (FObjectFinder only works in constructors)
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> CarMeshFinder(TEXT("/Game/Models/passenger_car_pack/SM_Car.SM_Car"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> CarMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene/Sedan.Sedan"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> FallbackFinder(TEXT("/Engine/BasicShapes/Cube.Cube"));
     CarMesh = CarMeshFinder.Succeeded() ? CarMeshFinder.Object : FallbackFinder.Object;
     if (!CarMesh) CarMesh = FallbackFinder.Object;
@@ -23,7 +23,7 @@ UCKTrafficManager::UCKTrafficManager()
     // Also try alternate paths for the car mesh (import naming varies)
     if (CarMesh == FallbackFinder.Object)
     {
-        static ConstructorHelpers::FObjectFinder<UStaticMesh> AltMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene.scene"));
+        static ConstructorHelpers::FObjectFinder<UStaticMesh> AltMeshFinder(TEXT("/Game/Models/passenger_car_pack/scene/Sport.Sport"));
         if (AltMeshFinder.Succeeded()) CarMesh = AltMeshFinder.Object;
     }
 }
@@ -31,9 +31,9 @@ UCKTrafficManager::UCKTrafficManager()
 void UCKTrafficManager::BuildRoadNetwork()
 {
     RoadLanes.Empty();
-    const float WorldSize = 10000.0f;
+    const float WorldSize = 16000.0f;
     const float RoadWidth = 400.0f;
-    const float BlockSize = (WorldSize - RoadWidth * 3) / 4.0f;
+    const float BlockSize = (WorldSize - RoadWidth * 5) / 6.0f;
 
     // Build N-S lanes
     for (int32 i = 0; i < 4; i++)
@@ -62,9 +62,9 @@ void UCKTrafficManager::BuildRoadNetwork()
     }
 
     // Build E-W lanes
-    for (int32 i = 0; i < 4; i++)
+    for (int32 i = 0; i < 6; i++)
     {
-        float Y = -WorldSize / 2 + i * (BlockSize + RoadWidth) + RoadWidth + BlockSize / 2;
+        float Y = -WorldSize / 2 + i * (BlockSize + RoadWidth) + RoadWidth + RoadWidth/2 + BlockSize / 2;
         FRoadLane LaneEW, LaneWE;
         LaneEW.SpeedLimit = 600.0f;
         LaneWE.SpeedLimit = 600.0f;

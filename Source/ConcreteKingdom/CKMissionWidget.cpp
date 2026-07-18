@@ -15,7 +15,7 @@ void UCKMissionWidget::NativeOnInitialized()
             
             TitleText = NewObject<UTextBlock>(this);
             TitleText->SetText(FText::FromString(TEXT("== MISSIONS ==")));
-            TitleText->Font.Size = 24;
+            TitleText->SetFont(FSlateFontInfo(FName("Default"), 24));
             TitleText->SetColorAndOpacity(FLinearColor::White);
             if (UPanelSlot* Slot = RootPanel->AddChild(TitleText))
                 if (UCanvasPanelSlot* CSlot = Cast<UCanvasPanelSlot>(Slot))
@@ -23,7 +23,7 @@ void UCKMissionWidget::NativeOnInitialized()
             
             MissionListText = NewObject<UTextBlock>(this);
             MissionListText->SetText(FText::FromString(TEXT("No missions available.")));
-            MissionListText->Font.Size = 16;
+            MissionListText->SetFont(FSlateFontInfo(FName("Default"), 16));
             if (UPanelSlot* Slot2 = RootPanel->AddChild(MissionListText))
                 if (UCanvasPanelSlot* CSlot2 = Cast<UCanvasPanelSlot>(Slot2))
                     CSlot2->SetPosition(FVector2D(40, 80));

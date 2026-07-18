@@ -10,7 +10,7 @@ UCLASS()
 class CONCRETEKINGDOM_API UCKMissionWidget : public UUserWidget {
     GENERATED_BODY()
 public:
-    void NativeOnInitialized() override;
+    virtual void NativeOnInitialized() override;
     void UpdateMissionList(const TArray<FString>& Available, const TArray<FString>& Completed);
     void Show();
     void Hide();
