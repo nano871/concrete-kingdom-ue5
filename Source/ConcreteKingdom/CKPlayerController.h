@@ -22,6 +22,7 @@ public:
     void OnInteract();
     void OnShoot();
     void OnOpenMissions();
+    void OnEnterExitVehicle();
     void OnPause();
     void OnOpenWeaponWheel();
     void OnOpenPhone();

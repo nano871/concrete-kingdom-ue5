@@ -8,6 +8,7 @@
 #include "CKPhoneScreenWidget.h"
 #include "CKMissionWidget.h"
 #include "CKGameMode.h"
+#include "CKVehiclePawn.h"
 #include "Blueprint/UserWidget.h"
 
 ACKPlayerController::ACKPlayerController() { bShowMouseCursor = false; MissionWidget = nullptr; }
@@ -61,6 +62,7 @@ void ACKPlayerController::SetupInputComponent()
         IC->BindAction("OpenWeaponWheel", IE_Pressed, this, &ACKPlayerController::OnOpenWeaponWheel);
         IC->BindAction("OpenPhone", IE_Pressed, this, &ACKPlayerController::OnOpenPhone);
         IC->BindAction("Interact", IE_Pressed, this, &ACKPlayerController::OnInteract);
+        IC->BindAction("EnterVehicle", IE_Pressed, this, &ACKPlayerController::OnEnterExitVehicle);
         IC->BindAction("Jump", IE_Pressed, this, &ACKPlayerController::OnJump);
         IC->BindAction("Shoot", IE_Pressed, this, &ACKPlayerController::OnShoot);
         IC->BindAction("Sprint", IE_Pressed, this, &ACKPlayerController::OnStartSprint);
@@ -139,6 +141,58 @@ void ACKPlayerController::OnOpenMissions()
         Mode.SetWidgetToFocus(MissionWidget->TakeWidget());
         Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
         SetInputMode(Mode);
+    }
+}
+
+void ACKPlayerController::OnEnterExitVehicle()
+{
+    // If currently in a vehicle, exit back to character
+    if (GetPawn() && GetPawn()->IsA<ACKVehiclePawn>())
+    {
+        // Find the player character and possess it
+        if (ACKCharacter* Char = Cast<ACKCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn()))
+        {
+            // Actually, just unpossess and respawn at vehicle location
+            FVector ExitLoc = GetPawn()->GetActorLocation() + FVector(200, 0, 0);
+            GetPawn()->Destroy();
+            // Spawn character at exit location (simplified - just log for now)
+            UE_LOG(LogTemp, Warning, TEXT("[VEHICLE] Exited vehicle"));
+        }
+        else
+        {
+            // Find character actor in world
+            for (TActorIterator<ACKCharacter> It(GetWorld()); It; ++It)
+            {
+                Possess(*It);
+                UE_LOG(LogTemp, Warning, TEXT("[VEHICLE] Returned to character"));
+                return;
+            }
+        }
+        return;
+    }
+
+    // On-foot: find nearest vehicle and enter it
+    ACKCharacter* Char = Cast<ACKCharacter>(GetPawn());
+    if (!Char) return;
+
+    // Simple proximity check - find nearest vehicle pawn
+    ACKVehiclePawn* NearestVehicle = nullptr;
+    float BestDist = 200.0f; // 2 meter range
+
+    for (TActorIterator<ACKVehiclePawn> It(GetWorld()); It; ++It)
+    {
+        ACKVehiclePawn* V = *It;
+        if (!V) continue;
+        float D = FVector::Dist(Char->GetActorLocation(), V->GetActorLocation());
+        if (D < BestDist) { BestDist = D; NearestVehicle = V; }
+    }
+
+    if (NearestVehicle)
+    {
+        // Enter vehicle: possess the vehicle pawn
+        Possess(NearestVehicle);
+        NearestVehicle->EnableInput(this);
+        UE_LOG(LogTemp, Warning, TEXT("[VEHICLE] Entered vehicle"));
     }
 }
 
