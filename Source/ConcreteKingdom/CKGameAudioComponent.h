@@ -16,7 +16,6 @@ public:
     UFUNCTION(BlueprintCallable) void PlayGunshot();
     UFUNCTION(BlueprintCallable) void PlayCashPickup();
     UFUNCTION(BlueprintCallable) void PlayFootstep();
-    UFUNCTION(BlueprintCallable) void PlayHorn();
     UFUNCTION(BlueprintCallable) void SetNightAmbient(bool bNight);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite) USoundWave* SirenSound;

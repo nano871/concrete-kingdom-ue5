@@ -67,11 +67,35 @@ void UCKGameAudioComponent::PlayFootstep()
     }
 }
 
-void UCKGameAudioComponent::PlayHorn() { PlayCashPickup(); }
 void UCKGameAudioComponent::SetNightAmbient(bool bNight)
 {
-    if (AmbientLoop && AmbientLoop->IsPlaying()) return;
-    UE_LOG(LogTemp, Verbose, TEXT("Night ambient: %s"), bNight ? TEXT("ON") : TEXT("OFF"));
+    if (!GetWorld()) return;
+    if (bNight)
+    {
+        if (!AmbientLoop)
+        {
+            AmbientLoop = NewObject<UAudioComponent>(this);
+            if (AmbientLoop)
+            {
+                AmbientLoop->bAutoDestroy = false;
+                AmbientLoop->bAutoActivate = true;
+                AmbientLoop->RegisterComponent();
+            }
+        }
+        if (AmbientLoop && !AmbientLoop->IsPlaying())
+        {
+            AmbientLoop->Play();
+            UE_LOG(LogTemp, Warning, TEXT("[AUDIO] Night ambient started"));
+        }
+    }
+    else
+    {
+        if (AmbientLoop && AmbientLoop->IsPlaying())
+        {
+            AmbientLoop->Stop();
+            UE_LOG(LogTemp, Warning, TEXT("[AUDIO] Night ambient stopped"));
+        }
+    }
 }
 
 void UCKGameAudioComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

@@ -100,8 +100,16 @@ def check_file(path):
                                 and not l.strip().startswith("bConnected")
                             ]
                             # Skip Tick/TickComponent overrides — calling Super is valid
+                            # Also skip functions with at least one non-UE_LOG statement or return
                             is_tick = any(kw in lines[func_start] for kw in ["TickComponent(", "Tick("])
-                            if len(meaningful) == 0 and len(inner) > 0 and not is_tick:
+                            has_real_content = any(
+                                l.strip() and not l.strip().startswith("//")
+                                and not l.strip().startswith("UE_LOG")
+                                and not l.strip().startswith("PrimaryComponentTick")
+                                and not l.strip().startswith("bConnected")
+                                for l in inner.split("\n")
+                            )
+                            if len(meaningful) == 0 and len(inner) > 0 and not is_tick and not has_real_content:
                                 e(name, func_start+1, "Stub function — only logs/returns")
                         i = j
                         break
