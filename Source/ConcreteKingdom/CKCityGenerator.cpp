@@ -97,3 +97,46 @@ void ACKCityGenerator::GenerateCity()
 
     UE_LOG(LogTemp, Warning, TEXT("City generated: %dx%d blocks"), GridSizeX, GridSizeY);
 }
+
+void ACKCityGenerator::SpawnRoad(FVector Start, FVector End, float Width)
+{
+    if (!GetWorld() || !CubeMesh) return;
+    AActor* Road = GetWorld()->SpawnActor<AActor>();
+    if (!Road) return;
+    UStaticMeshComponent* Comp = NewObject<UStaticMeshComponent>(Road);
+    Comp->SetStaticMesh(CubeMesh);
+    FVector Mid = (Start + End) * 0.5f;
+    float Length = FVector::Dist(Start, End);
+    Comp->SetWorldScale3D(FVector(Width / 100.0f, Length / 100.0f, 0.08f));
+    Comp->RegisterComponent();
+    Road->SetRootComponent(Comp);
+    Road->SetActorLocation(Mid);
+    FRotator Rot = (End - Start).Rotation();
+    Road->SetActorRotation(FRotator(0, Rot.Yaw, 0));
+    SpawnedActors.Add(Road);
+    RoadEndpoints.Add(Start); RoadEndpoints.Add(End);
+}
+
+void ACKCityGenerator::SpawnBuilding(FVector Position, FVector Size, float Height, FLinearColor Color)
+{
+    if (!GetWorld() || !CubeMesh) return;
+    AActor* Bldg = GetWorld()->SpawnActor<AActor>();
+    if (!Bldg) return;
+    UStaticMeshComponent* Comp = NewObject<UStaticMeshComponent>(Bldg);
+    Comp->SetStaticMesh(CubeMesh);
+    Comp->SetWorldScale3D(FVector(Size.X / 100.0f, Size.Y / 100.0f, Height / 100.0f));
+    Comp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    Comp->SetCollisionProfileName(FName("BlockAll"));
+    Comp->RegisterComponent();
+    Bldg->SetRootComponent(Comp);
+    Bldg->SetActorLocation(Position);
+    SpawnedActors.Add(Bldg);
+}
+
+void ACKCityGenerator::ClearCity()
+{
+    for (AActor* A : SpawnedActors)
+        if (IsValid(A)) A->Destroy();
+    SpawnedActors.Empty();
+    RoadEndpoints.Empty();
+}

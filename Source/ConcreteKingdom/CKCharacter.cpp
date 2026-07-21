@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
+#include "Engine/DamageEvents.h"
 
 ACKCharacter::ACKCharacter()
 {
@@ -93,5 +94,20 @@ void ACKCharacter::Shoot()
 {
     if (!bHasWeapon || Ammo <= 0) return;
     Ammo--;
+    FVector Origin = FollowCamera ? FollowCamera->GetComponentLocation() : GetActorLocation();
+    FVector Forward = FollowCamera ? FollowCamera->GetForwardVector() : GetActorForwardVector();
+    FVector End = Origin + Forward * 10000.0f;
+    FHitResult Hit;
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(this);
+    if (GetWorld()->LineTraceSingleByChannel(Hit, Origin, End, ECC_Visibility, Params))
+    {
+        if (Hit.GetActor())
+        {
+            FPointDamageEvent DmgEvent(25.0f, Hit, -Forward, nullptr);
+            Hit.GetActor()->TakeDamage(25.0f, DmgEvent, GetController(), this);
+            UE_LOG(LogTemp, Warning, TEXT("[CHAR] Hit %s for 25 damage"), *Hit.GetActor()->GetName());
+        }
+    }
     UE_LOG(LogTemp, Warning, TEXT("[CHAR] Shot! Ammo left: %d"), Ammo);
 }
