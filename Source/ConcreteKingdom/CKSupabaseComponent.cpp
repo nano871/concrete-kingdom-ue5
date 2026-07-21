@@ -9,7 +9,7 @@ UCKSupabaseComponent::UCKSupabaseComponent()
     PrimaryComponentTick.bCanEverTick = false;
     bConnected = false;
     SupabaseURL = "https://psjeegjoumdorbygxkfd.supabase.co";
-    AnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzamVlZ2pvdW1kb3JieWd4a2ZkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDEzODU2OCwiZXhwIjoyMDk5NzE0NTY4fQ.9g1fa_2lJSoPNrFceT1p2c0e1PVVBNX34CnhvEH2tyE";
+    AnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzamVlZ2pvdW1kb3JieWd4a2ZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMzg1NjgsImV4cCI6MjA5OTcxNDU2OH0.7-LUy-MF4JQn59ury6rnwpvKk4IHFjCG5rTLMJp9Qto";
 }
 
 void UCKSupabaseComponent::BeginPlay()
