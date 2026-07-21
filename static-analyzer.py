@@ -98,9 +98,10 @@ def check_file(path):
                                 and not l.strip().startswith("Super::")
                                 and not l.strip().startswith("PrimaryComponentTick")
                                 and not l.strip().startswith("bConnected")
-                                and not "return" in l.strip()
                             ]
-                            if len(meaningful) == 0 and len(inner) > 0:
+                            # Skip Tick/TickComponent overrides — calling Super is valid
+                            is_tick = any(kw in lines[func_start] for kw in ["TickComponent(", "Tick("])
+                            if len(meaningful) == 0 and len(inner) > 0 and not is_tick:
                                 e(name, func_start+1, "Stub function — only logs/returns")
                         i = j
                         break

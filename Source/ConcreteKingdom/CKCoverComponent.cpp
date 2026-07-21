@@ -1,6 +1,7 @@
 #include "CKCoverComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/DamageEvents.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 
@@ -55,7 +56,21 @@ void UCKCoverComponent::ToggleCover()
 void UCKCoverComponent::BlindFire()
 {
     if (!bInCover) return;
-    UE_LOG(LogTemp, Warning, TEXT("Blind fire! High spread, no headshots"));
+    bBlindFiring = true;
+    ACharacter* Char = Cast<ACharacter>(GetOwner());
+    if (!Char || !GetWorld()) return;
+    // Fire with high spread in cover direction
+    FVector Origin = Char->GetActorLocation() + Char->GetActorForwardVector() * 50.0f;
+    FVector SpreadDir = CoverDirection + FMath::VRand() * 0.5f; // high spread
+    FVector End = Origin + SpreadDir * 2000.0f;
+    FHitResult Hit;
+    GetWorld()->LineTraceSingleByChannel(Hit, Origin, End, ECC_Visibility);
+    if (Hit.bBlockingHit && Hit.GetActor())
+    {
+        FPointDamageEvent DmgEvent(20.0f, Hit, -SpreadDir, nullptr);
+        Hit.GetActor()->TakeDamage(20.0f, DmgEvent, Char->GetController(), Char);
+    }
+    UE_LOG(LogTemp, Warning, TEXT("[COVER] Blind fire! High spread, no headshots"));
 }
 
 void UCKCoverComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

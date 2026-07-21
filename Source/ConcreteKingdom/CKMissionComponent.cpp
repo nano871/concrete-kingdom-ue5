@@ -115,25 +115,15 @@ FVector UCKMissionComponent::GetObjectiveLocation()
     return FVector::ZeroVector;
 }
 
-TArray<FName> UCKMissionComponent::GetCompletedMissions() { return CompletedMissions; 
-void UCKMissionComponent::CompleteObjective(FString ObjectiveID)
-{
-    ActiveObjective = ObjectiveID;
-    UE_LOG(LogTemp, Warning, TEXT("Objective completed: %s"), *ObjectiveID);
+TArray<FName> UCKMissionComponent::GetCompletedMissions() 
+{ 
+    return CompletedMissions; 
 }
 
-TArray<FString> UCKMissionComponent::GetAvailableMissions()
+bool UCKMissionComponent::AllPrereqsMet(const FMissionDef& Def)
 {
-    TArray<FString> Avail;
-    for (auto& Pair : Missions)
-        if (!Pair.Value.bCompleted && (Pair.Value.Prerequisites.Num() == 0 || AllPrereqsMet(Pair.Value)))
-            Avail.Add(Pair.Key);
-    return Avail;
-}
-
-FString UCKMissionComponent::GetActiveMissionID()
-{
-    return ActiveMissionID;
-}
-
+    for (const FName& Req : Def.RequiredMissions)
+        if (!CompletedMissions.Contains(Req))
+            return false;
+    return true;
 }

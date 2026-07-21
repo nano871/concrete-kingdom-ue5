@@ -30,5 +30,16 @@ void ACKTrafficLightActor::Tick(float DeltaTime)
 
 void ACKTrafficLightActor::UpdateLightColor()
 {
-    // Visual would be set here with material changes
+    if (!Mesh) return;
+    float CyclePos = FMath::Fmod(Timer, GreenDuration * 2 + YellowDuration * 2);
+    bool bIsYellow = (CyclePos >= GreenDuration && CyclePos < GreenDuration + YellowDuration) ||
+                     (CyclePos >= GreenDuration * 2 + YellowDuration && CyclePos < GreenDuration * 2 + YellowDuration * 2);
+    bool bIsGreen = (CyclePos < GreenDuration) || 
+                    (CyclePos >= GreenDuration + YellowDuration && CyclePos < GreenDuration * 2 + YellowDuration);
+    FLinearColor LightColor = FLinearColor::Red;
+    if (bIsGreen && bNorthSouthGreen) LightColor = FLinearColor::Green;
+    else if (bIsYellow) LightColor = FLinearColor::Yellow;
+    // Create or reuse a dynamic material instance
+    UMaterialInstanceDynamic* Mat = Mesh->CreateAndSetMaterialInstanceDynamic(0);
+    if (Mat) Mat->SetVectorParameterValue(TEXT("EmissiveColor"), LightColor);
 }
